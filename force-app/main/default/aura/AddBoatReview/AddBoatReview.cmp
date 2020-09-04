@@ -1,0 +1,62 @@
+<aura:component
+  implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome"
+  access="global"
+>
+  <aura:attribute name="boat" type="Boat__c" />
+  <aura:attribute name="simpleBoatReview" type="BoatReview__c" />
+  <aura:attribute name="boatReview" type="BoatReview__c" />
+  <aura:attribute access="private" name="recordError" type="String" />
+
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <aura:registerEvent name="boatReviewAdded" type="c:BoatReviewAdded" />
+
+  <force:recordData
+    aura:id="service"
+    recordId=""
+    layoutType="FULL"
+    targetRecord="{!v.simpleBoatReview}"
+    targetFields="{!v.boatReview}"
+    targetError="{!v.recordError}"
+    fields="Id, Name, Comment__c, Rating__c, Boat__c"
+    recordUpdated="{!c.onRecordUpdated}"
+  />
+
+  <div class="slds-form">
+    <div class="slds-form-element slds-form-element_stacked">
+      <lightning:input
+        aura:id="title"
+        name="Title"
+        label="Title"
+        value="{!v.boatReview.Name}"
+        required="true"
+      />
+    </div>
+    <div class="slds-form-element slds-form-element_stacked">
+      <lightning:inputRichText
+        aura:id="description"
+        label="Description:"
+        labelVisible="true"
+        value="{!v.boatReview.Comment__c}"
+        placeholder="Comment"
+        disabledCategories="FORMAT_FONT"
+      />
+      <c:FiveStarRating value="{!v.boatReview.Rating__c}" readonly="false" />
+    </div>
+    <div
+      class="slds-form-element slds-form-element_stacked slds-align_absolute-center"
+    >
+      <lightning:button
+        label="Submit"
+        title="Submit"
+        iconName="utility:save"
+        onclick="{!c.onSave}"
+      />
+    </div>
+  </div>
+
+  <aura:if isTrue="{!not(empty(v.recordError))}">
+    <div class="recordError">
+      {!v.recordError}
+    </div>
+  </aura:if>
+</aura:component>
